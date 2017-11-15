@@ -3,22 +3,28 @@ import java.io.*;
 
 public class LineParser {
 	
-	InputStream file;
+	BufferedReader reader;
 	
 	public LineParser() {
-		file = null;
+		reader = null;
 	}
 	
 	public LineParser(FileInputStream in) {
-		file = in;
+		reader = new BufferedReader(new InputStreamReader(in));
 	}
 	
-	public ArrayList<String> parseNext() {
-		ArrayList<String> inst = new ArrayList<String>();
+	public String[] parseNext() throws IOException {
+		String line = reader.readLine();
+		if (line == null) { 
+			return new String[] { "EOF" };
+		}
 		
-		// parse next line of file
-		// store it as tokens in inst
+		line = line.trim();
+		while (line.length() == 0 || (line.charAt(0) == '/' && line.charAt(1) == '/')) {
+			line = reader.readLine().trim();
+		}
 		
+		String[] inst = line.split(" ");
 		return inst;
 	}
 }
