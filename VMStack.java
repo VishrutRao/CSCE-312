@@ -3,90 +3,223 @@ import java.util.ArrayList;
 import java.io.*;
 
 public class VMStack {
-	
-	Stack<Double> stk;
-	
-	OutputStream out;
+	static int next;
 	
 	public VMStack() {
-		stk = new Stack<Double>();
-		out = null;
+		next = 0;
 	}
 	
-	public VMStack(FileOutputStream o) {
-		stk = new Stack<Double>();
-		out = o;
+	private int nextLabel() {
+		return next++;
 	}
 	
-	public void handleInst(String[] line) {
+	public String handleInst(String[] line) {
 		if (line[0].equals("push")) {
-			stk.push(Double.valueOf(line[2]));
+			if (line[1].equals("constant")) {
+				return "@" + line[2] + "\n" +
+					   "D = A\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("local")) {
+				return "@LCL\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("argument")) {
+				return "@ARG\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("this")) {
+				return "@THIS\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("that")) {
+				return "@THAT\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("pointer")) {
+				return "@POINTER\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("static")) {
+				return "@STATIC\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("this")) {
+				return "@THIS\n" +
+					   "D = M\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			else if (line[1].equals("temp")) {
+				return "@R5\n" +
+					   "D = A\n" +
+					   "@" + line[2] + "\n" +
+					   "A = D+A\n" +
+					   "D = M\n" +
+					   "@SP\n" +
+					   "A = M\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "M = M+1\n";
+			}
+			return "error";
 		}
 		else if (line[0].equals("add")) {
-			stk.push(stk.pop() + stk.pop());
-			System.out.println(stk.peek());
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "M = D+M\n";
 		}
 		else if (line[0].equals("sub")) {
-			stk.push(stk.pop() - stk.pop());
-			System.out.println(stk.peek());
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "M = M-D\n";
 		}
 		else if (line[0].equals("neg")) {
-			stk.push(Double.valueOf(-1*stk.pop()));
-			System.out.println(stk.peek());
+			return "@SP\n" +
+				   "A = M-1\n" +
+				   "M = !M\n";
 		}
 		else if (line[0].equals("and")) {
-			Number res = stk.pop() + stk.pop();
-			if (res.equals(2.0)) {
-				stk.push(1.0);
-			} else {
-				stk.push(0.0);
-			}
-			System.out.println(stk.peek());
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "M = D&M\n";
 		}
 		else if (line[0].equals("or")) {
-			Number res = stk.pop() + stk.pop();
-			if (res.equals(1.0) || res.equals(2.0)) {
-				stk.push(1.0);
-			} else {
-				stk.push(0.0);
-			}
-			System.out.println(stk.peek());
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "M = D|M\n";
 		}
 		else if (line[0].equals("not")) {
-			Number res = stk.pop();
-			if (res.equals(0.0)) {
-				stk.push(1.0);
-			} else {
-				stk.push(0.0);
-			}
-			System.out.println(stk.peek());
+			return "@SP\n" +
+				   "A = M-1\n" +
+				   "M = !M\n";
 		}
 		else if (line[0].equals("eq")) {
-			Boolean res = stk.pop().equals(stk.pop());
-			if (res) {
-				stk.push(1.0);
-			} else {
-				stk.push(0.0);
-			}
-			System.out.println(stk.peek());
+			int n = nextLabel();
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "D = D-M\n" +
+				   "@EQ." + n + "\n" +
+				   "D;JEQ\n" +
+				   "@NEQ." + n + "\n" +
+				   "0;JMP\n" +
+				   "(EQ." + n + ")\n" +
+				   "@SP\n" +
+				   "A = A-1\n" +
+				   "M = 1\n" +
+				   "(NEQ." + n + ")\n" +
+				   "@SP\n" +
+				   "A = A-1\n" +
+				   "M = 0\n";
 		}
 		else if (line[0].equals("lt")) {
-			Boolean res = stk.pop() < stk.pop();
-			if (res) {
-				stk.push(1.0);
-			} else {
-				stk.push(0.0);
-			}
-			System.out.println(stk.peek());
+			int n = nextLabel();
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "D = M-D\n" +
+				   "@LT." + n + "\n" +
+				   "D;JLT\n" +
+				   "@NLT." + n + "\n" +
+				   "0;JMP\n" +
+				   "(LT." + n + ")\n" +
+				   "@SP\n" +
+				   "A = A-1\n" +
+				   "M = 1\n" +
+				   "(NLT." + n + ")\n" +
+				   "@SP\n" +
+				   "A = A-1\n" +
+				   "M = 0\n";
 		}
 		else if (line[0].equals("gt")) {
-			Boolean res = stk.pop() > stk.pop();
-			if (res) {
-				stk.push(1.0);
-			} else {
-				stk.push(0.0);
-			}
-			System.out.println(stk.peek());
+			int n = nextLabel();
+			return "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "A = A-1\n" +
+				   "D = M-D\n" +
+				   "@GT." + n + "\n" +
+				   "D;JGT\n" +
+				   "@NGT." + n + "\n" +
+				   "0;JMP\n" +
+				   "(GT." + n + ")\n" +
+				   "@SP\n" +
+				   "A = A-1\n" +
+				   "M = 1\n" +
+				   "(NGT." + n + ")\n" +
+				   "@SP\n" +
+				   "A = A-1\n" +
+				   "M = 0\n";
 		}
+		return "error";
 	}
 }

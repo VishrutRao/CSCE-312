@@ -10,13 +10,15 @@ public class VMTest {
 			lp = new LineParser(file);
 			vstk = new VMStack();
 			
+			PrintWriter pw = new PrintWriter("output.txt");
 			
 			while (true) {
 				String[] ss = lp.parseNext();
 				if (ss[0] == "EOF") {
 					break;
 				}
-				vstk.handleInst(ss);
+				String inst = vstk.handleInst(ss);
+				System.out.print(inst);
 			}
 			
 		} catch (Exception e) {
