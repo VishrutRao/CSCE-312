@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.*;
 
 public class VMTest {
 	private static LineParser lp;
@@ -6,11 +7,11 @@ public class VMTest {
 	
 	public static void main(String[] args) {
 		try {
-			FileInputStream file = new FileInputStream("StackTest.vm"); 
+			FileInputStream file = new FileInputStream(args[0]); 
 			lp = new LineParser(file);
-			vstk = new VMStack();
+			vstk = new VMStack("StackTest.vm");
 			
-			PrintWriter pw = new PrintWriter("output.txt");
+			BufferedWriter out = new BufferedWriter(new FileWriter(args[0].substring(0, args[0].length() - 3) + ".asm"));
 			
 			while (true) {
 				String[] ss = lp.parseNext();
@@ -19,8 +20,9 @@ public class VMTest {
 				}
 				String inst = vstk.handleInst(ss);
 				System.out.print(inst);
+				out.write(inst);
 			}
-			
+			out.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}

@@ -4,19 +4,20 @@ import java.io.*;
 
 public class VMStack {
 	static int next;
+	static String fileName;
 	
-	public VMStack() {
+	public VMStack(String file) {
 		next = 0;
+		fileName = file;
 	}
 	
 	private int nextLabel() {
 		return next++;
 	}
 	
-	public String handleInst(String[] line) {
-		if (line[0].equals("push")) {
-			if (line[1].equals("constant")) {
-				return "@" + line[2] + "\n" +
+	private String handlePush(String loc, String idx) {
+		if (loc.equals("constant")) {
+				return "@" + idx + "\n" +
 					   "D = A\n" +
 					   "@SP\n" +
 					   "A = M\n" +
@@ -24,10 +25,10 @@ public class VMStack {
 					   "@SP\n" +
 					   "M = M+1\n";
 			}
-			else if (line[1].equals("local")) {
+			else if (loc.equals("local")) {
 				return "@LCL\n" +
 					   "D = M\n" +
-					   "@" + line[2] + "\n" +
+					   "@" + idx + "\n" +
 					   "A = D+A\n" +
 					   "D = M\n" +
 					   "@SP\n" +
@@ -36,10 +37,10 @@ public class VMStack {
 					   "@SP\n" +
 					   "M = M+1\n";
 			}
-			else if (line[1].equals("argument")) {
+			else if (loc.equals("argument")) {
 				return "@ARG\n" +
 					   "D = M\n" +
-					   "@" + line[2] + "\n" +
+					   "@" + idx + "\n" +
 					   "A = D+A\n" +
 					   "D = M\n" +
 					   "@SP\n" +
@@ -48,10 +49,10 @@ public class VMStack {
 					   "@SP\n" +
 					   "M = M+1\n";
 			}
-			else if (line[1].equals("this")) {
+			else if (loc.equals("this")) {
 				return "@THIS\n" +
 					   "D = M\n" +
-					   "@" + line[2] + "\n" +
+					   "@" + idx + "\n" +
 					   "A = D+A\n" +
 					   "D = M\n" +
 					   "@SP\n" +
@@ -60,10 +61,10 @@ public class VMStack {
 					   "@SP\n" +
 					   "M = M+1\n";
 			}
-			else if (line[1].equals("that")) {
+			else if (loc.equals("that")) {
 				return "@THAT\n" +
 					   "D = M\n" +
-					   "@" + line[2] + "\n" +
+					   "@" + idx + "\n" +
 					   "A = D+A\n" +
 					   "D = M\n" +
 					   "@SP\n" +
@@ -72,11 +73,28 @@ public class VMStack {
 					   "@SP\n" +
 					   "M = M+1\n";
 			}
-			else if (line[1].equals("pointer")) {
-				return "@POINTER\n" +
-					   "D = M\n" +
-					   "@" + line[2] + "\n" +
-					   "A = D+A\n" +
+			else if (loc.equals("pointer")) {
+				if (idx.equals("0")) {
+					return "@THIS\n" +
+						   "D = M\n" +
+						   "@SP\n" +
+					       "A = M\n" +
+					       "M = D\n" +
+					       "@SP\n" +
+					       "M = M+1\n";
+				}
+				else {
+					return "@THAT\n" +
+						   "D = M\n" +
+						   "@SP\n" +
+					       "A = M\n" +
+					       "M = D\n" +
+					       "@SP\n" +
+					       "M = M+1\n";
+				}
+			}
+			else if (loc.equals("static")) {
+				return "@" + fileName + "." + idx + "\n" +
 					   "D = M\n" +
 					   "@SP\n" +
 					   "A = M\n" +
@@ -84,34 +102,10 @@ public class VMStack {
 					   "@SP\n" +
 					   "M = M+1\n";
 			}
-			else if (line[1].equals("static")) {
-				return "@STATIC\n" +
-					   "D = M\n" +
-					   "@" + line[2] + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
-					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (line[1].equals("this")) {
-				return "@THIS\n" +
-					   "D = M\n" +
-					   "@" + line[2] + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
-					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (line[1].equals("temp")) {
+			else if (loc.equals("temp")) {
 				return "@R5\n" +
 					   "D = A\n" +
-					   "@" + line[2] + "\n" +
+					   "@" + idx + "\n" +
 					   "A = D+A\n" +
 					   "D = M\n" +
 					   "@SP\n" +
@@ -121,6 +115,11 @@ public class VMStack {
 					   "M = M+1\n";
 			}
 			return "error";
+	}
+	
+	public String handleInst(String[] line) {
+		if (line[0].equals("push")) {
+			return handlePush(line[1], line[2]);
 		}
 		else if (line[0].equals("add")) {
 			return "@SP\n" +
@@ -166,7 +165,7 @@ public class VMStack {
 				   "AM = M-1\n" +
 				   "D = M\n" +
 				   "A = A-1\n" +
-				   "D = D-M\n" +
+				   "D = M-D\n" +
 				   "@EQ." + n + "\n" +
 				   "D;JEQ\n" +
 				   "@NEQ." + n + "\n" +
@@ -174,11 +173,14 @@ public class VMStack {
 				   "(EQ." + n + ")\n" +
 				   "@SP\n" +
 				   "A = A-1\n" +
-				   "M = 1\n" +
+				   "M = -1\n" +
+				   "@EQ." + n + ".after\n" +
+				   "0;JMP\n" +
 				   "(NEQ." + n + ")\n" +
 				   "@SP\n" +
 				   "A = A-1\n" +
-				   "M = 0\n";
+				   "M = 0\n" +
+				   "(EQ." + n + ".after)\n";
 		}
 		else if (line[0].equals("lt")) {
 			int n = nextLabel();

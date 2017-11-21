@@ -16,7 +16,7 @@ M = M+1
 AM = M-1
 D = M
 A = A-1
-D = D-M
+D = M-D
 @EQ.0
 D;JEQ
 @NEQ.0
@@ -24,11 +24,14 @@ D;JEQ
 (EQ.0)
 @SP
 A = A-1
-M = 1
+M = -1
+@EQ.0.after
+0;JMP
 (NEQ.0)
 @SP
 A = A-1
 M = 0
+(EQ.0.after)
 @17
 D = A
 @SP
@@ -47,7 +50,7 @@ M = M+1
 AM = M-1
 D = M
 A = A-1
-D = D-M
+D = M-D
 @EQ.1
 D;JEQ
 @NEQ.1
@@ -55,11 +58,14 @@ D;JEQ
 (EQ.1)
 @SP
 A = A-1
-M = 1
+M = -1
+@EQ.1.after
+0;JMP
 (NEQ.1)
 @SP
 A = A-1
 M = 0
+(EQ.1.after)
 @16
 D = A
 @SP
@@ -78,7 +84,7 @@ M = M+1
 AM = M-1
 D = M
 A = A-1
-D = D-M
+D = M-D
 @EQ.2
 D;JEQ
 @NEQ.2
@@ -86,11 +92,14 @@ D;JEQ
 (EQ.2)
 @SP
 A = A-1
-M = 1
+M = -1
+@EQ.2.after
+0;JMP
 (NEQ.2)
 @SP
 A = A-1
 M = 0
+(EQ.2.after)
 @892
 D = A
 @SP
