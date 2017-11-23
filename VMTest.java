@@ -9,7 +9,7 @@ public class VMTest {
 		try {
 			FileInputStream file = new FileInputStream(args[0]); 
 			lp = new LineParser(file);
-			vstk = new VMStack("StackTest.vm");
+			vstk = new VMStack(args[0].substring(0, args[0].length() - 3));
 			
 			BufferedWriter out = new BufferedWriter(new FileWriter(args[0].substring(0, args[0].length() - 3) + ".asm"));
 			

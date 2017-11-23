@@ -23,13 +23,13 @@ D;JEQ
 0;JMP
 (EQ.0)
 @SP
-A = A-1
+A = M-1
 M = -1
 @EQ.0.after
 0;JMP
 (NEQ.0)
 @SP
-A = A-1
+A = M-1
 M = 0
 (EQ.0.after)
 @17
@@ -57,13 +57,13 @@ D;JEQ
 0;JMP
 (EQ.1)
 @SP
-A = A-1
+A = M-1
 M = -1
 @EQ.1.after
 0;JMP
 (NEQ.1)
 @SP
-A = A-1
+A = M-1
 M = 0
 (EQ.1.after)
 @16
@@ -91,13 +91,13 @@ D;JEQ
 0;JMP
 (EQ.2)
 @SP
-A = A-1
+A = M-1
 M = -1
 @EQ.2.after
 0;JMP
 (NEQ.2)
 @SP
-A = A-1
+A = M-1
 M = 0
 (EQ.2.after)
 @892
@@ -125,12 +125,15 @@ D;JLT
 0;JMP
 (LT.3)
 @SP
-A = A-1
-M = 1
+A = M-1
+M = -1
+@LT.3.after
+0;JMP
 (NLT.3)
 @SP
-A = A-1
+A = M-1
 M = 0
+(LT.3.after)
 @891
 D = A
 @SP
@@ -156,12 +159,15 @@ D;JLT
 0;JMP
 (LT.4)
 @SP
-A = A-1
-M = 1
+A = M-1
+M = -1
+@LT.4.after
+0;JMP
 (NLT.4)
 @SP
-A = A-1
+A = M-1
 M = 0
+(LT.4.after)
 @891
 D = A
 @SP
@@ -187,12 +193,15 @@ D;JLT
 0;JMP
 (LT.5)
 @SP
-A = A-1
-M = 1
+A = M-1
+M = -1
+@LT.5.after
+0;JMP
 (NLT.5)
 @SP
-A = A-1
+A = M-1
 M = 0
+(LT.5.after)
 @32767
 D = A
 @SP
@@ -218,12 +227,15 @@ D;JGT
 0;JMP
 (GT.6)
 @SP
-A = A-1
-M = 1
+A = M-1
+M = -1
+@GT.6.after
+0;JMP
 (NGT.6)
 @SP
-A = A-1
+A = M-1
 M = 0
+(GT.6.after)
 @32766
 D = A
 @SP
@@ -249,12 +261,15 @@ D;JGT
 0;JMP
 (GT.7)
 @SP
-A = A-1
-M = 1
+A = M-1
+M = -1
+@GT.7.after
+0;JMP
 (NGT.7)
 @SP
-A = A-1
+A = M-1
 M = 0
+(GT.7.after)
 @32766
 D = A
 @SP
@@ -280,12 +295,15 @@ D;JGT
 0;JMP
 (GT.8)
 @SP
-A = A-1
-M = 1
+A = M-1
+M = -1
+@GT.8.after
+0;JMP
 (NGT.8)
 @SP
-A = A-1
+A = M-1
 M = 0
+(GT.8.after)
 @57
 D = A
 @SP
@@ -326,7 +344,7 @@ A = A-1
 M = M-D
 @SP
 A = M-1
-M = !M
+M = -M
 @SP
 AM = M-1
 D = M

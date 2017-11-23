@@ -17,109 +17,210 @@ public class VMStack {
 	
 	private String handlePush(String loc, String idx) {
 		if (loc.equals("constant")) {
-				return "@" + idx + "\n" +
-					   "D = A\n" +
-					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (loc.equals("local")) {
-				return "@LCL\n" +
-					   "D = M\n" +
-					   "@" + idx + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
-					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (loc.equals("argument")) {
-				return "@ARG\n" +
-					   "D = M\n" +
-					   "@" + idx + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
-					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (loc.equals("this")) {
+			return "@" + idx + "\n" +
+				   "D = A\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		} else if (loc.equals("local")) {
+			return "@LCL\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "A = D+A\n" +
+				   "D = M\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		} else if (loc.equals("argument")) {
+			return "@ARG\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "A = D+A\n" +
+				   "D = M\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		} else if (loc.equals("this")) {
+			return "@THIS\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "A = D+A\n" +
+				   "D = M\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		} else if (loc.equals("that")) {
+			return "@THAT\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "A = D+A\n" +
+				   "D = M\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		} else if (loc.equals("pointer")) {
+			if (idx.equals("0")) {
 				return "@THIS\n" +
 					   "D = M\n" +
-					   "@" + idx + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
 					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (loc.equals("that")) {
+				       "A = M\n" +
+				       "M = D\n" +
+				       "@SP\n" +
+				       "M = M+1\n";
+			} else {
 				return "@THAT\n" +
 					   "D = M\n" +
-					   "@" + idx + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
 					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
+				       "A = M\n" +
+				       "M = D\n" +
+				       "@SP\n" +
+				       "M = M+1\n";
 			}
-			else if (loc.equals("pointer")) {
-				if (idx.equals("0")) {
-					return "@THIS\n" +
-						   "D = M\n" +
-						   "@SP\n" +
-					       "A = M\n" +
-					       "M = D\n" +
-					       "@SP\n" +
-					       "M = M+1\n";
-				}
-				else {
-					return "@THAT\n" +
-						   "D = M\n" +
-						   "@SP\n" +
-					       "A = M\n" +
-					       "M = D\n" +
-					       "@SP\n" +
-					       "M = M+1\n";
-				}
-			}
-			else if (loc.equals("static")) {
-				return "@" + fileName + "." + idx + "\n" +
-					   "D = M\n" +
-					   "@SP\n" +
-					   "A = M\n" +
-					   "M = D\n" +
-					   "@SP\n" +
-					   "M = M+1\n";
-			}
-			else if (loc.equals("temp")) {
-				return "@R5\n" +
+		} else if (loc.equals("static")) {
+			return "@" + fileName + "." + idx + "\n" +
+				   "D = M\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		} else if (loc.equals("temp")) {
+			return "@R5\n" +
+				   "D = A\n" +
+				   "@" + idx + "\n" +
+				   "A = D+A\n" +
+				   "D = M\n" +
+				   "@SP\n" +
+				   "A = M\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "M = M+1\n";
+		}
+		return "error";
+	}
+	
+	private String handlePop(String loc, String idx) {	
+		if (loc.equals("local")) {
+			return "@LCL\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "D = D+A\n" +
+				   "@R13\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "@R13\n" +
+				   "A = M\n" +
+				   "M = D\n";
+		} else if (loc.equals("argument")) {
+			return "@ARG\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "D = D+A\n" +
+				   "@R13\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "@R13\n" +
+				   "A = M\n" +
+				   "M = D\n";
+		} else if (loc.equals("this")) {
+			return "@THIS\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "D = D+A\n" +
+				   "@R13\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "@R13\n" +
+				   "A = M\n" +
+				   "M = D\n";
+		} else if (loc.equals("that")) {
+			return "@THAT\n" +
+				   "D = M\n" +
+				   "@" + idx + "\n" +
+				   "D = D+A\n" +
+				   "@R13\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "@R13\n" +
+				   "A = M\n" +
+				   "M = D\n";
+		} else if (loc.equals("pointer")) {
+			if (idx.equals("0")) {
+				return "@THIS\n" +
 					   "D = A\n" +
-					   "@" + idx + "\n" +
-					   "A = D+A\n" +
-					   "D = M\n" +
-					   "@SP\n" +
-					   "A = M\n" +
+					   "@R13\n" +
 					   "M = D\n" +
 					   "@SP\n" +
-					   "M = M+1\n";
+					   "AM = M-1\n" +
+					   "D = M\n" +
+					   "@R13\n" +
+					   "A = M\n" +
+					   "M = D\n";
+			} else {
+				return "@THAT\n" +
+					   "D = A\n" +
+					   "@R13\n" +
+					   "M = D\n" +
+					   "@SP\n" +
+					   "AM = M-1\n" +
+					   "D = M\n" +
+					   "@R13\n" +
+					   "A = M\n" +
+					   "M = D\n";
 			}
-			return "error";
+		} else if (loc.equals("static")) {
+			return "@" + fileName + "." + idx + "\n" +
+				   "D = A\n" +
+				   "@R13\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "@R13\n" +
+				   "A = M\n" +
+				   "M = D\n";
+		} else if (loc.equals("temp")) {
+			return "@R5\n" +
+				   "D = A\n" +
+				   "@" + idx + "\n" +
+				   "D = D+A\n" +
+				   "@R13\n" +
+				   "M = D\n" +
+				   "@SP\n" +
+				   "AM = M-1\n" +
+				   "D = M\n" +
+				   "@R13\n" +
+				   "A = M\n" +
+				   "M = D\n";
+		}
+		System.out.println("Error: " + loc + " " + idx);
+		return "error";
 	}
 	
 	public String handleInst(String[] line) {
 		if (line[0].equals("push")) {
 			return handlePush(line[1], line[2]);
+		}
+		if (line[0].equals("pop")) {
+			return handlePop(line[1], line[2]);
 		}
 		else if (line[0].equals("add")) {
 			return "@SP\n" +
@@ -138,7 +239,7 @@ public class VMStack {
 		else if (line[0].equals("neg")) {
 			return "@SP\n" +
 				   "A = M-1\n" +
-				   "M = !M\n";
+				   "M = -M\n";
 		}
 		else if (line[0].equals("and")) {
 			return "@SP\n" +
@@ -172,13 +273,13 @@ public class VMStack {
 				   "0;JMP\n" +
 				   "(EQ." + n + ")\n" +
 				   "@SP\n" +
-				   "A = A-1\n" +
+				   "A = M-1\n" +
 				   "M = -1\n" +
 				   "@EQ." + n + ".after\n" +
 				   "0;JMP\n" +
 				   "(NEQ." + n + ")\n" +
 				   "@SP\n" +
-				   "A = A-1\n" +
+				   "A = M-1\n" +
 				   "M = 0\n" +
 				   "(EQ." + n + ".after)\n";
 		}
@@ -195,12 +296,15 @@ public class VMStack {
 				   "0;JMP\n" +
 				   "(LT." + n + ")\n" +
 				   "@SP\n" +
-				   "A = A-1\n" +
-				   "M = 1\n" +
+				   "A = M-1\n" +
+				   "M = -1\n" +
+				   "@LT." + n + ".after\n" +
+				   "0;JMP\n" +
 				   "(NLT." + n + ")\n" +
 				   "@SP\n" +
-				   "A = A-1\n" +
-				   "M = 0\n";
+				   "A = M-1\n" +
+				   "M = 0\n" +
+				   "(LT." + n + ".after)\n";
 		}
 		else if (line[0].equals("gt")) {
 			int n = nextLabel();
@@ -215,12 +319,15 @@ public class VMStack {
 				   "0;JMP\n" +
 				   "(GT." + n + ")\n" +
 				   "@SP\n" +
-				   "A = A-1\n" +
-				   "M = 1\n" +
+				   "A = M-1\n" +
+				   "M = -1\n" +
+				   "@GT." + n + ".after\n" +
+				   "0;JMP\n" +
 				   "(NGT." + n + ")\n" +
 				   "@SP\n" +
-				   "A = A-1\n" +
-				   "M = 0\n";
+				   "A = M-1\n" +
+				   "M = 0\n" +
+				   "(GT." + n + ".after)\n";
 		}
 		return "error";
 	}
