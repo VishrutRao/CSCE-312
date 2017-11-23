@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class VMTest {
+public class VMTranslator {
 	private static LineParser lp;
 	private static VMStack vstk;
 	
@@ -19,7 +19,6 @@ public class VMTest {
 					break;
 				}
 				String inst = vstk.handleInst(ss);
-				System.out.print(inst);
 				out.write(inst);
 			}
 			out.close();
