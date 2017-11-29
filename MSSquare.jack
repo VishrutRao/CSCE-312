@@ -1,0 +1,55 @@
+class MSSquare {
+	field Square square;
+	field int mine;
+	field Number count;
+	field boolean show;
+	field int x, y, size;
+	
+	constructor MSSquare new(int ax, int ay, int as) {
+		let x = ax;
+		let y = ay;
+		let size = as;
+		let square = Square.new(x, y, size);
+		
+		let count = Number.new();
+		let mine = 0;
+		let show = false;
+		
+		return this;
+	}
+	
+	method void draw() {
+		do square.draw();
+		if (show) {
+			do Screen.setColor(false);
+			do Screen.drawRectangle(x + (x/10), y + (y/10), x + size - (x/10), y + size - (y/10));
+			if (mine > 0) {
+				do Screen.setColor(true);
+				do Screen.drawCircle(x + (size/2), y + (size/2), size/10);
+			} else {
+				do count.draw(x, y);
+			}
+		}
+		return;
+	}
+	
+	method void setShow() {
+		let show = ~show;
+		return;
+	}
+	
+	method void setMine() {
+		let mine = 1;
+		return;
+	}
+	
+	method void unsetMine() {
+		let mine = 0;
+		return;
+	}
+	
+	method void setCount(int c) {
+		do count.setNum(c);
+		return;
+	}
+}
