@@ -1,4 +1,4 @@
-package SyntaxAnalyzer;
+//package SyntaxAnalyzer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
